@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - EduMeet</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Add this meta tag to fix CORS issues -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: https://ssl.gstatic.com; connect-src * 'self' https://*.firebaseio.com wss://*.firebaseio.com;">
+    <style>
+        .portal-container {
+            padding: 2rem 0;
+        }
+        
+        .portal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .portal-title {
+            margin: 0;
+        }
+        
+        .portal-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+        
+        .portal-tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .portal-tab.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .portal-content {
+            display: none;
+        }
+        
+        .portal-content.active {
+            display: block;
+        }
+        
+        .booking-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .teacher-card {
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .teacher-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .teacher-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .teacher-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .teacher-info h3 {
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .teacher-info p {
+            margin: 0;
+            color: var(--text-light);
+        }
+        
+        .teacher-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+        }
+        
+        .teacher-rating i {
+            color: #FFD700;
+        }
+        
+        .teacher-body {
+            padding: 1.5rem;
+        }
+        
+        .teacher-body p {
+            margin-top: 0;
+        }
+        
+        .availability-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+        
+        .availability-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .availability-item:last-child {
+            border-bottom: none;
+        }
+        
+        .appointment-card {
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .appointment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .appointment-date {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        
+        .appointment-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-confirmed {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+        
+        .status-pending {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+        
+        .status-cancelled {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .appointment-teacher {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .appointment-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .appointment-details {
+            margin-bottom: 1rem;
+        }
+        
+        .appointment-detail {
+            display: flex;
+            margin-bottom: 0.5rem;
+        }
+        
+        .appointment-detail i {
+            width: 20px;
+            margin-right: 0.5rem;
+            color: var(--text-light);
+        }
+        
+        .appointment-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background-color: var(--background-alt);
+            border-radius: var(--border-radius);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state h3 {
+            margin-top: 0;
+        }
+        
+        .calendar-container {
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .calendar-nav button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .calendar-nav button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            padding: 1rem;
+        }
+        
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 500;
+            padding: 0.5rem;
+            color: var(--text-light);
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+        
+        .calendar-day:hover {
+            background-color: var(--background-alt);
+        }
+        
+        .calendar-day.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .calendar-day.other-month {
+            color: var(--text-light);
+            opacity: 0.5;
+        }
+        
+        .calendar-day.has-events::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+        }
+        
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 1rem;
+        }
+        
+        .time-slot {
+            padding: 0.5rem;
+            text-align: center;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .time-slot:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .time-slot.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .time-slot.unavailable {
+            background-color: var(--background-alt);
+            color: var(--text-light);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            .portal-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .booking-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle">
+        <input type="checkbox" id="dark-mode-toggle">
+        <label for="dark-mode-toggle">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
+        </label>
+    </div>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <img src="https://via.placeholder.com/150x50?text=EduMeet" alt="EduMeet Logo">
+                </div>
+                <div class="nav-links" id="navLinks">
+                    <i class="fas fa-times" id="closeMenu"></i>
+                    <ul>
+                        <li><a href="#" class="active">Dashboard</a></li>
+                        <li><a href="#">Messages</a></li>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">Settings</a></li>
+                        <li><a href="#">Help</a></li>
+                    </ul>
+                </div>
+                <div class="nav-buttons">
+                    <span class="user-greeting">Hello, <span id="userName">Student</span></span>
+                    <a href="#" class="btn btn-secondary" id="logoutBtn">Log Out</a>
+                </div>
+                <i class="fas fa-bars" id="openMenu"></i>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="portal-container">
+                <div class="portal-header">
+                    <h1 class="portal-title">Student Dashboard</h1>
+                    <div class="portal-actions">
+                        <button id="newBookingBtn" class="btn btn-primary"><i class="fas fa-plus"></i> New Booking</button>
+                    </div>
+                </div>
+                
+                <div class="portal-tabs">
+                    <div class="portal-tab active" data-tab="upcoming">Upcoming Appointments</div>
+                    <div class="portal-tab" data-tab="book">Book Appointment</div>
+                    <div class="portal-tab" data-tab="history">Appointment History</div>
+                </div>
+                
+                <div class="portal-content active" id="upcoming-content">
+                    <div class="loading-indicator" id="upcomingLoading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading your appointments...</p>
+                    </div>
+                    <div id="upcoming-appointments" class="appointments-grid">
+                        <!-- Appointments will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="portal-content" id="book-content">
+                    <div class="booking-filters">
+                        <div class="search-container">
+                            <input type="text" id="teacherSearch" placeholder="Search teachers...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="filter-container">
+                            <select id="subjectFilter">
+                                <option value="all">All Subjects</option>
+                                <option value="mathematics">Mathematics</option>
+                                <option value="computer science">Computer Science</option>
+                                <option value="physics">Physics</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="loading-indicator" id="teachersLoading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading teachers...</p>
+                    </div>
+                    
+                    <div id="teachersContainer" class="booking-grid">
+                        <!-- Teachers will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="portal-content" id="history-content">
+                    <div class="loading-indicator" id="historyLoading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading appointment history...</p>
+                    </div>
+                    <div id="appointment-history" class="appointments-grid">
+                        <!-- Past appointments will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Book Appointment</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="teacher-info-modal">
+                    <img id="modalTeacherAvatar" src="https://via.placeholder.com/60x60" alt="Teacher" class="teacher-avatar">
+                    <div>
+                        <h4 id="modalTeacherName">Teacher Name</h4>
+                        <p id="modalTeacherSubject">Subject</p>
+                    </div>
+                </div>
+                
+                <p>Please select a date and time for your appointment:</p>
+                
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <h4 id="currentMonth">May 2023</h4>
+                        <div class="calendar-nav">
+                            <button id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                            <button id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar will be generated here -->
+                    </div>
+                </div>
+                
+                <div class="selected-date-container">
+                    <h4>Selected Date: <span id="selectedDate">Please select a date</span></h4>
+                </div>
+                
+                <div class="time-slots" id="timeSlots">
+                    <!-- Time slots will be generated here -->
+                </div>
+                
+                <div class="appointment-notes">
+                    <h4>Appointment Notes</h4>
+                    <textarea id="appointmentNotes" rows="3" placeholder="Describe what you'd like to discuss..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-cancel">Cancel</button>
+                <button class="btn btn-primary" id="confirmBooking" disabled>Confirm Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="https://via.placeholder.com/150x50?text=EduMeet" alt="EduMeet Logo">
+                    <p>Making education more accessible through seamless appointment booking.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">Dashboard</a></li>
+                        <li><a href="#">My Appointments</a></li>
+                        <li><a href="#">Messages</a></li>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">Help Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h4>Contact Support</h4>
+                    <p>Need help? Our support team is here for you.</p>
+                    <a href="mailto:support@edumeet.com" class="btn btn-outline">Email Support</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 EduMeet. All rights reserved.</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Debug Button -->
+    <button id="testFirestore" class="btn btn-secondary" style="position: fixed; bottom: 20px; right: 20px;">Test Firestore</button>
+
+    <script type="module" src="portal.js"></script>
+    <script>
+        document.getElementById('testFirestore').addEventListener('click', function() {
+            import('./test-firestore.js')
+                .then(() => console.log("Test script loaded"))
+                .catch(error => console.error("Error loading test script:", error));
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,334 @@
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#google-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#user-info {
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.auth-container {
+    width: 100%;
+    padding: 30px 0;
+}
+
+.auth-logo {
+    margin-bottom: 20px;
+    color: white;
+}
+
+.auth-icon {
+    font-size: 3rem;
+    background: rgba(255, 255, 255, 0.2);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    padding-top: 15px;
+}
+
+.auth-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.card-header {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.nav-tabs {
+    border-bottom: none;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    color: #6c757d;
+    font-weight: 500;
+    padding: 12px 20px;
+    transition: all 0.3s;
+}
+
+.nav-tabs .nav-link.active {
+    color: #4e73df;
+    border-bottom: 2px solid #4e73df;
+    background-color: transparent;
+}
+
+.nav-tabs .nav-link:hover:not(.active) {
+    border-color: transparent;
+    color: #4e73df;
+}
+
+.input-group-text {
+    background-color: transparent;
+    border-right: none;
+}
+
+.form-control {
+    border-left: none;
+    padding-left: 0;
+}
+
+.form-control:focus {
+    border-color: #ced4da;
+    box-shadow: none;
+}
+
+.input-group:focus-within {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-radius: 0.375rem;
+}
+
+.btn-auth {
+    padding: 10px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-auth:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.divider span {
+    padding: 0 10px;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.btn-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    transition: all 0.3s;
+}
+
+.btn-social:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.forgot-password {
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.forgot-password:hover {
+    color: #4e73df;
+}
+
+.user-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    background: white;
+}
+
+.user-avatar {
+    font-size: 5rem;
+    color: #4e73df;
+    margin-bottom: 15px;
+}
+
+#logout-btn {
+    transition: all 0.3s;
+}
+
+#logout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 576px) {
+    .auth-card {
+        margin: 0 15px;
+    }
+}
+
+/* Profile picture styling */
+.profile-pic-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.profile-pic {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto;
+    border: 3px solid #f8f9fa;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-pic-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px 0;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.profile-pic-overlay:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+/* Modal styling */
+.modal-content {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+}
+
+/* Verification badge */
+.text-success, .text-warning {
+    font-size: 0.9rem;
+}
+
+#resend-verification {
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+#resend-verification:hover {
+    text-decoration: underline;
+}
+
+/* Edit profile button */
+#edit-profile-btn {
+    margin-bottom: 10px;
+    transition: all 0.3s;
+}
+
+#edit-profile-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Password strength meter */
+.password-strength .progress {
+    height: 5px;
+}
+
+.password-feedback {
+    font-size: 0.8rem;
+}
+
+/* Toggle password button */
+.toggle-password {
+    border-left: none;
+    background-color: transparent;
+}
+
+.toggle-password:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Delete account button */
+#delete-account-btn {
+    transition: all 0.3s;
+}
+
+#delete-account-btn:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Facebook button */
+.btn-outline-primary {
+    border-color: #3b5998;
+    color: #3b5998;
+}
+
+.btn-outline-primary:hover {
+    background-color: #3b5998;
+    color: white;
+}
+
+/* Modal danger header */
+.modal-header.bg-danger .btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Reset password modal */
+#resetPasswordModal .modal-content {
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+#resetPasswordModal .modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+}
+
+#resetPasswordModal .btn-primary {
+    transition: all 0.3s;
+}
+
+#resetPasswordModal .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+#resetPasswordModal .form-text {
+    font-size: 0.8rem;
+    color: #6c757d;
+} 

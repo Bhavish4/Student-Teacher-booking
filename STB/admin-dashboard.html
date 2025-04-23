@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - EduMeet</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .sidebar {
+            background-color: var(--background-alt);
+            padding: 2rem 1rem;
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius);
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        .sidebar-menu a i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            padding: 2rem;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .stat-details h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .stat-details p {
+            margin: 0;
+            color: var(--text-light);
+        }
+        
+        .admin-section {
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .data-table th {
+            font-weight: 600;
+            color: var(--text-color);
+            background-color: var(--background-alt);
+        }
+        
+        .data-table tr:hover {
+            background-color: var(--background-alt);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .status-inactive {
+            background-color: var(--text-light);
+            color: white;
+        }
+        
+        .status-pending {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+        
+        .action-btn:hover {
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 992px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle">
+        <input type="checkbox" id="dark-mode-toggle">
+        <label for="dark-mode-toggle">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
+        </label>
+    </div>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <a href="index.html">
+                        <div class="logo-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="logo-text">Edu<span>Meet</span></div>
+                    </a>
+                </div>
+                <div class="nav-links" id="navLinks">
+                    <i class="fas fa-times" id="closeMenu"></i>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="admin-dashboard.html" class="active">Dashboard</a></li>
+                        <li><a href="admin-users.html">User Management</a></li>
+                        <li><a href="admin-reports.html">Reports</a></li>
+                        <li><a href="admin-settings.html">Settings</a></li>
+                    </ul>
+                </div>
+                <div class="nav-buttons">
+                    <!-- Will be populated by script.js based on login state -->
+                </div>
+                <i class="fas fa-bars" id="openMenu"></i>
+            </nav>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#"><i class="fas fa-users"></i> User Management</a></li>
+                <li><a href="#"><i class="fas fa-user-tie"></i> Teachers</a></li>
+                <li><a href="#"><i class="fas fa-user-graduate"></i> Students</a></li>
+                <li><a href="#"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
+                <li><a href="#"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="#" id="sidebarLogout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Admin Dashboard</h1>
+                <div class="user-info">
+                    <span id="welcomeMessage">Welcome back, <strong id="userName">Admin</strong>!</span>
+                </div>
+            </div>
+
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>150</h3>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>45</h3>
+                        <p>Teachers</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>105</h3>
+                        <p>Students</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>78</h3>
+                        <p>Appointments</p>
+                    </div>
+                </div>
+            </div>
+
+            <section class="admin-section">
+                <div class="section-header">
+                    <h2>Recent Users</h2>
+                    <a href="#" class="btn btn-primary">View All</a>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Joined Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>John Davis</td>
+                            <td>john.davis@example.com</td>
+                            <td>Teacher</td>
+                            <td>May 10, 2023</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td class="action-buttons">
+                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sarah Wilson</td>
+                            <td>sarah.wilson@example.com</td>
+                            <td>Teacher</td>
+                            <td>May 8, 2023</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td class="action-buttons">
+                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Michael Brown</td>
+                            <td>michael.brown@example.com</td>
+                            <td>Student</td>
+                            <td>May 15, 2023</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td class="action-buttons">
+                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Emma Johnson</td>
+                            <td>emma.johnson@example.com</td>
+                            <td>Student</td>
+                            <td>May 12, 2023</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td class="action-buttons">
+                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="admin-section">
+                <div class="section-header">
+                    <h2>Recent Appointments</h2>
+                    <a href="#" class="btn btn-primary">View All</a>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Teacher</th>
+                            <th>Student</th>
+                            <th>Subject</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>John Davis</td>
+                            <td>Emma Johnson</td>
+                            <td>Mathematics</td>
+                            <td>May 18, 2023</td>
+                            <td>10:00 AM</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td class="action-buttons">
+                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sarah Wilson</td>
+                            <td>Michael Brown</td>
+                            <td>Computer Science</td>
+                            <td>May 20, 2023</td>
+                            <td>2:30 PM</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td class="action-buttons">
+                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>John Davis</td>
+                            <td>Michael Brown</td>
+                            <td>Mathematics</td>
+                            <td>May 15, 2023</td>
+                            <td>11:00 AM</td>
+                            <td><span class="status-badge status-active">Completed</span></td>
+                            <td class="action-buttons">
+                                <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script type="module">
+        import { auth, onAuthStateChanged, signOut } from './firebase-config.js';
+        import { ROLES, getUserRole } from './firebase-roles.js';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const storedUser = localStorage.getItem('user');
+            let currentUser = storedUser ? JSON.parse(storedUser) : null;
+            
+            // Update welcome message
+            const userNameElement = document.getElementById('userName');
+            if (userNameElement && currentUser) {
+                userNameElement.textContent = currentUser.displayName || currentUser.email.split('@')[0];
+            }
+            
+            // Handle authentication state
+            onAuthStateChanged(auth, async function(user) {
+                if (!user) {
+                    // Not logged in, redirect to login page
+                    window.location.href = 'auth.html';
+                    return;
+                }
+                
+                // Check if user is an admin
+                try {
+                    const userRole = await getUserRole(user.uid);
+                    if (userRole !== ROLES.ADMIN) {
+                        // Redirect non-admin users to appropriate dashboard
+                        if (userRole === ROLES.TEACHER) {
+                            window.location.href = 'teacher-dashboard.html';
+                        } else {
+                            window.location.href = 'student-dashboard.html';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error getting user role:', error);
+                    window.location.href = 'auth.html';
+                }
+            });
+            
+            // Sidebar logout
+            const sidebarLogout = document.getElementById('sidebarLogout');
+            if (sidebarLogout) {
+                sidebarLogout.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    signOut(auth).then(() => {
+                        localStorage.removeItem('user');
+                        window.location.href = 'index.html';
+                    }).catch((error) => {
+                        console.error('Error signing out:', error);
+                        alert('Error logging out: ' + error.message);
+                    });
+                });
+            }
+            
+            // Dark mode toggle
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            if (darkModeToggle) {
+                // Check for saved dark mode preference
+                if (localStorage.getItem('darkMode') === 'enabled') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    darkModeToggle.checked = true;
+                }
+
+                darkModeToggle.addEventListener('change', function() {
+                    if (this.checked) {
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                        localStorage.setItem('darkMode', 'enabled');
+                    } else {
+                        document.documentElement.setAttribute('data-theme', 'light');
+                        localStorage.setItem('darkMode', 'disabled');
+                    }
+                });
+            }
+            
+            // Mobile menu toggle
+            const openMenu = document.getElementById('openMenu');
+            const closeMenu = document.getElementById('closeMenu');
+            const navLinks = document.getElementById('navLinks');
+            
+            if (openMenu && closeMenu && navLinks) {
+                openMenu.addEventListener('click', function() {
+                    navLinks.classList.add('active');
+                });
+                
+                closeMenu.addEventListener('click', function() {
+                    navLinks.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

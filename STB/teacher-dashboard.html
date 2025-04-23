@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - EduMeet</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .sidebar {
+            background-color: var(--background-alt);
+            padding: 2rem 1rem;
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius);
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        .sidebar-menu a i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            padding: 2rem;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .stat-details h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .stat-details p {
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        .calendar-container {
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .calendar-nav button {
+            background: var(--background-alt);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .calendar-nav button:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .calendar-view {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day {
+            text-align: center;
+            font-weight: 600;
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .calendar-date {
+            aspect-ratio: 1/1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .calendar-date:hover {
+            background-color: var(--background-alt);
+        }
+
+        .calendar-date.today {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .calendar-date.has-events::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+        }
+
+        .table-section {
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            font-weight: 600;
+            color: var(--text-color);
+            background-color: var(--background-alt);
+        }
+
+        .data-table tr:hover {
+            background-color: var(--background-alt);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-upcoming {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .status-completed {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-cancelled {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+        
+        .action-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .student-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .student-card {
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .student-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 2rem;
+        }
+
+        .student-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .student-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .student-info {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .student-stats {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .student-stat {
+            text-align: center;
+        }
+
+        .student-stat-value {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .student-stat-label {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 992px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle">
+        <input type="checkbox" id="dark-mode-toggle">
+        <label for="dark-mode-toggle">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
+        </label>
+    </div>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <a href="index.html">
+                        <div class="logo-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="logo-text">Edu<span>Meet</span></div>
+                    </a>
+                </div>
+                <div class="nav-links" id="navLinks">
+                    <i class="fas fa-times" id="closeMenu"></i>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="teacher-dashboard.html" class="active">Dashboard</a></li>
+                        <li><a href="teacher-appointments.html">Appointments</a></li>
+                        <li><a href="teacher-profile.html">My Profile</a></li>
+                        <li><a href="teacher-settings.html">Settings</a></li>
+                    </ul>
+                </div>
+                <div class="nav-buttons">
+                    <!-- Will be populated by script.js based on login state -->
+                </div>
+                <i class="fas fa-bars" id="openMenu"></i>
+            </nav>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
+                <li><a href="#"><i class="fas fa-user-graduate"></i> My Students</a></li>
+                <li><a href="#"><i class="fas fa-book"></i> Courses</a></li>
+                <li><a href="#"><i class="fas fa-comment-alt"></i> Messages</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="#" id="sidebarLogout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Teacher Dashboard</h1>
+                <div class="user-info">
+                    <span id="welcomeMessage">Welcome back, <strong id="userName">Teacher</strong>!</span>
+                </div>
+            </div>
+
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>12</h3>
+                        <p>Upcoming Appointments</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>25</h3>
+                        <p>Active Students</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>45</h3>
+                        <p>Total Hours</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>4.8</h3>
+                        <p>Rating</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h2>May 2023</h2>
+                    <div class="calendar-nav">
+                        <button><i class="fas fa-chevron-left"></i></button>
+                        <button><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="calendar-view">
+                    <div class="calendar-day">Sun</div>
+                    <div class="calendar-day">Mon</div>
+                    <div class="calendar-day">Tue</div>
+                    <div class="calendar-day">Wed</div>
+                    <div class="calendar-day">Thu</div>
+                    <div class="calendar-day">Fri</div>
+                    <div class="calendar-day">Sat</div>
+                    
+                    <!-- Calendar dates would be dynamically generated -->
+                    <div class="calendar-date">30</div>
+                    <div class="calendar-date">1</div>
+                    <div class="calendar-date">2</div>
+                    <div class="calendar-date">3</div>
+                    <div class="calendar-date">4</div>
+                    <div class="calendar-date">5</div>
+                    <div class="calendar-date">6</div>
+                    <div class="calendar-date">7</div>
+                    <div class="calendar-date">8</div>
+                    <div class="calendar-date">9</div>
+                    <div class="calendar-date has-events">10</div>
+                    <div class="calendar-date">11</div>
+                    <div class="calendar-date has-events">12</div>
+                    <div class="calendar-date">13</div>
+                    <div class="calendar-date">14</div>
+                    <div class="calendar-date">15</div>
+                    <div class="calendar-date today has-events">16</div>
+                    <div class="calendar-date has-events">17</div>
+                    <div class="calendar-date">18</div>
+                    <div class="calendar-date">19</div>
+                    <div class="calendar-date">20</div>
+                    <div class="calendar-date">21</div>
+                    <div class="calendar-date has-events">22</div>
+                    <div class="calendar-date">23</div>
+                    <div class="calendar-date">24</div>
+                    <div class="calendar-date">25</div>
+                    <div class="calendar-date">26</div>
+                    <div class="calendar-date">27</div>
+                    <div class="calendar-date">28</div>
+                    <div class="calendar-date">29</div>
+                    <div class="calendar-date">30</div>
+                    <div class="calendar-date">31</div>
+                    <div class="calendar-date">1</div>
+                    <div class="calendar-date">2</div>
+                    <div class="calendar-date">3</div>
+                </div>
+            </div>
+
+            <section class="table-section">
+                <div class="section-header">
+                    <h2>Upcoming Appointments</h2>
+                    <a href="#" class="btn btn-primary">View All</a>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Subject</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Emily Johnson</td>
+                            <td>Mathematics</td>
+                            <td>May 16, 2023</td>
+                            <td>10:00 AM - 11:00 AM</td>
+                            <td><span class="status-badge status-upcoming">Upcoming</span></td>
+                            <td class="action-buttons">
+                                <button class="action-btn" title="Start"><i class="fas fa-video"></i></button>
+                                <button class="action-btn" title="Reschedule"><i class="fas fa-calendar-alt"></i></button>
+                                <button class="action-btn" title="Cancel"><i class="fas fa-times-circle"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Michael Brown</td>
+                            <td>Physics</td>
+                            <td>May 17, 2023</td>
+                            <td>2:30 PM - 3:30 PM</td>
+                            <td><span class="status-badge status-upcoming">Upcoming</span></td>
+                            <td class="action-buttons">
+                                <button class="action-btn" title="Start"><i class="fas fa-video"></i></button>
+                                <button class="action-btn" title="Reschedule"><i class="fas fa-calendar-alt"></i></button>
+                                <button class="action-btn" title="Cancel"><i class="fas fa-times-circle"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sophia Martinez</td>
+                            <td>Computer Science</td>
+                            <td>May 22, 2023</td>
+                            <td>4:00 PM - 5:00 PM</td>
+                            <td><span class="status-badge status-upcoming">Upcoming</span></td>
+                            <td class="action-buttons">
+                                <button class="action-btn" title="Start"><i class="fas fa-video"></i></button>
+                                <button class="action-btn" title="Reschedule"><i class="fas fa-calendar-alt"></i></button>
+                                <button class="action-btn" title="Cancel"><i class="fas fa-times-circle"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="table-section">
+                <div class="section-header">
+                    <h2>Recent Appointments</h2>
+                    <a href="#" class="btn btn-primary">View All</a>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Subject</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Emily Johnson</td>
+                            <td>Mathematics</td>
+                            <td>May 10, 2023</td>
+                            <td>10:00 AM - 11:00 AM</td>
+                            <td><span class="status-badge status-completed">Completed</span></td>
+                            <td class="action-buttons">
+                                <button class="action-btn" title="View Notes"><i class="fas fa-clipboard"></i></button>
+                                <button class="action-btn" title="Add Feedback"><i class="fas fa-comment"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Michael Brown</td>
+                            <td>Physics</td>
+                            <td>May 12, 2023</td>
+                            <td>2:30 PM - 3:30 PM</td>
+                            <td><span class="status-badge status-completed">Completed</span></td>
+                            <td class="action-buttons">
+                                <button class="action-btn" title="View Notes"><i class="fas fa-clipboard"></i></button>
+                                <button class="action-btn" title="Add Feedback"><i class="fas fa-comment"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>David Wilson</td>
+                            <td>Chemistry</td>
+                            <td>May 8, 2023</td>
+                            <td>11:00 AM - 12:00 PM</td>
+                            <td><span class="status-badge status-cancelled">Cancelled</span></td>
+                            <td class="action-buttons">
+                                <button class="action-btn" title="Reschedule"><i class="fas fa-calendar-alt"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="table-section">
+                <div class="section-header">
+                    <h2>My Top Students</h2>
+                    <a href="#" class="btn btn-primary">View All Students</a>
+                </div>
+                <div class="student-grid">
+                    <div class="student-card">
+                        <div class="student-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="student-name">Emily Johnson</div>
+                        <div class="student-info">Mathematics</div>
+                        <div class="student-stats">
+                            <div class="student-stat">
+                                <div class="student-stat-value">15</div>
+                                <div class="student-stat-label">Sessions</div>
+                            </div>
+                            <div class="student-stat">
+                                <div class="student-stat-value">20</div>
+                                <div class="student-stat-label">Hours</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Message</button>
+                    </div>
+                    <div class="student-card">
+                        <div class="student-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="student-name">Michael Brown</div>
+                        <div class="student-info">Physics</div>
+                        <div class="student-stats">
+                            <div class="student-stat">
+                                <div class="student-stat-value">12</div>
+                                <div class="student-stat-label">Sessions</div>
+                            </div>
+                            <div class="student-stat">
+                                <div class="student-stat-value">18</div>
+                                <div class="student-stat-label">Hours</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Message</button>
+                    </div>
+                    <div class="student-card">
+                        <div class="student-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="student-name">Sophia Martinez</div>
+                        <div class="student-info">Computer Science</div>
+                        <div class="student-stats">
+                            <div class="student-stat">
+                                <div class="student-stat-value">8</div>
+                                <div class="student-stat-label">Sessions</div>
+                            </div>
+                            <div class="student-stat">
+                                <div class="student-stat-value">12</div>
+                                <div class="student-stat-label">Hours</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Message</button>
+                    </div>
+                    <div class="student-card">
+                        <div class="student-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="student-name">David Wilson</div>
+                        <div class="student-info">Chemistry</div>
+                        <div class="student-stats">
+                            <div class="student-stat">
+                                <div class="student-stat-value">5</div>
+                                <div class="student-stat-label">Sessions</div>
+                            </div>
+                            <div class="student-stat">
+                                <div class="student-stat-value">7</div>
+                                <div class="student-stat-label">Hours</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Message</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module">
+        import { auth, onAuthStateChanged, signOut } from './firebase-config.js';
+        import { ROLES, getUserRole } from './firebase-roles.js';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const storedUser = localStorage.getItem('user');
+            let currentUser = storedUser ? JSON.parse(storedUser) : null;
+            
+            // Update welcome message
+            const userNameElement = document.getElementById('userName');
+            if (userNameElement && currentUser) {
+                userNameElement.textContent = currentUser.displayName || currentUser.email.split('@')[0];
+            }
+            
+            // Handle authentication state
+            onAuthStateChanged(auth, async function(user) {
+                if (!user) {
+                    // Not logged in, redirect to login page
+                    window.location.href = 'auth.html';
+                    return;
+                }
+                
+                // Check if user is a teacher
+                try {
+                    const userRole = await getUserRole(user.uid);
+                    if (userRole !== ROLES.TEACHER) {
+                        // Redirect non-teacher users to appropriate dashboard
+                        if (userRole === ROLES.ADMIN) {
+                            window.location.href = 'admin-dashboard.html';
+                        } else {
+                            window.location.href = 'student-dashboard.html';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error getting user role:', error);
+                    window.location.href = 'auth.html';
+                }
+            });
+            
+            // Sidebar logout
+            const sidebarLogout = document.getElementById('sidebarLogout');
+            if (sidebarLogout) {
+                sidebarLogout.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    signOut(auth).then(() => {
+                        localStorage.removeItem('user');
+                        window.location.href = 'index.html';
+                    }).catch((error) => {
+                        console.error('Error signing out:', error);
+                        alert('Error logging out: ' + error.message);
+                    });
+                });
+            }
+            
+            // Dark mode toggle
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            if (darkModeToggle) {
+                // Check for saved dark mode preference
+                if (localStorage.getItem('darkMode') === 'enabled') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    darkModeToggle.checked = true;
+                }
+
+                darkModeToggle.addEventListener('change', function() {
+                    if (this.checked) {
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                        localStorage.setItem('darkMode', 'enabled');
+                    } else {
+                        document.documentElement.setAttribute('data-theme', 'light');
+                        localStorage.setItem('darkMode', 'disabled');
+                    }
+                });
+            }
+            
+            // Mobile menu toggle
+            const openMenu = document.getElementById('openMenu');
+            const closeMenu = document.getElementById('closeMenu');
+            const navLinks = document.getElementById('navLinks');
+            
+            if (openMenu && closeMenu && navLinks) {
+                openMenu.addEventListener('click', function() {
+                    navLinks.classList.add('active');
+                });
+                
+                closeMenu.addEventListener('click', function() {
+                    navLinks.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html> 
